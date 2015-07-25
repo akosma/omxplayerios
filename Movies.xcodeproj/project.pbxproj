@@ -14,6 +14,8 @@
 		3AF86E9D1B63BA7500719F63 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AF86E9C1B63BA7500719F63 /* Images.xcassets */; };
 		3AF86EA01B63BA7500719F63 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AF86E9E1B63BA7500719F63 /* LaunchScreen.xib */; };
 		3AF86EAC1B63BA7600719F63 /* MoviesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */; };
+		3AF86EB61B63BA9000719F63 /* APIConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EB51B63BA9000719F63 /* APIConnector.swift */; };
+		3AF86EB81B63BAC700719F63 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3AF86EB71B63BAC700719F63 /* Settings.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,8 @@
 		3AF86EA51B63BA7600719F63 /* MoviesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoviesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AF86EAA1B63BA7600719F63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTests.swift; sourceTree = "<group>"; };
+		3AF86EB51B63BA9000719F63 /* APIConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIConnector.swift; sourceTree = "<group>"; };
+		3AF86EB71B63BAC700719F63 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,10 +86,12 @@
 				3AF86E931B63BA7500719F63 /* AppDelegate.swift */,
 				3AF86E951B63BA7500719F63 /* MasterViewController.swift */,
 				3AF86E971B63BA7500719F63 /* DetailViewController.swift */,
+				3AF86EB51B63BA9000719F63 /* APIConnector.swift */,
 				3AF86E991B63BA7500719F63 /* Main.storyboard */,
 				3AF86E9C1B63BA7500719F63 /* Images.xcassets */,
 				3AF86E9E1B63BA7500719F63 /* LaunchScreen.xib */,
 				3AF86E911B63BA7500719F63 /* Supporting Files */,
+				3AF86EB71B63BAC700719F63 /* Settings.bundle */,
 			);
 			path = Movies;
 			sourceTree = "<group>";
@@ -164,6 +170,11 @@
 				TargetAttributes = {
 					3AF86E8D1B63BA7500719F63 = {
 						CreatedOnToolsVersion = 6.4;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					3AF86EA41B63BA7600719F63 = {
 						CreatedOnToolsVersion = 6.4;
@@ -195,6 +206,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AF86EB81B63BAC700719F63 /* Settings.bundle in Resources */,
 				3AF86E9B1B63BA7500719F63 /* Main.storyboard in Resources */,
 				3AF86EA01B63BA7500719F63 /* LaunchScreen.xib in Resources */,
 				3AF86E9D1B63BA7500719F63 /* Images.xcassets in Resources */,
@@ -217,6 +229,7 @@
 			files = (
 				3AF86E981B63BA7500719F63 /* DetailViewController.swift in Sources */,
 				3AF86E961B63BA7500719F63 /* MasterViewController.swift in Sources */,
+				3AF86EB61B63BA9000719F63 /* APIConnector.swift in Sources */,
 				3AF86E941B63BA7500719F63 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
