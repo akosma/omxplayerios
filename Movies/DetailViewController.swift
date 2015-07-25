@@ -15,9 +15,7 @@ class DetailViewController: UIViewController {
     
     var currentMovieName = ""
     var player : AVAudioPlayer!
-    
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
-    
+
     // MARK: - IBAction methods
     
     @IBAction func stopPlayback(sender: AnyObject) {
@@ -74,9 +72,6 @@ class DetailViewController: UIViewController {
     func configureView() {
         if let detail: AnyObject = self.detailItem {
             self.navigationItem.title = detail.description
-            if let label = self.detailDescriptionLabel {
-                label.text = "Currently playing '\(currentMovieName)'"
-            }
         }
     }
     
