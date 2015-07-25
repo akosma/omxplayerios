@@ -18,6 +18,8 @@ class DetailViewController: UIViewController {
     
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     
+    // MARK: - IBAction methods
+    
     @IBAction func stopPlayback(sender: AnyObject) {
         let alertController = UIAlertController(title: "Stop Playback of '\(currentMovieName)'",
             message: "Are you sure?",
@@ -37,6 +39,30 @@ class DetailViewController: UIViewController {
         alertController.addAction(OKAction)
         
         self.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    @IBAction func pausePlayback(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(.Pause)
+    }
+    
+    @IBAction func backward10Minutes(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Backward10Minutes)
+    }
+    
+    @IBAction func backward(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Backward30Seconds)
+    }
+    
+    @IBAction func forward(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Forward30Seconds)
+    }
+    
+    @IBAction func forward10Minutes(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Forward10Minutes)
+    }
+    
+    @IBAction func toggleSubtitles(sender: AnyObject) {
+        APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Subtitles)
     }
     
     var detailItem: AnyObject? {
