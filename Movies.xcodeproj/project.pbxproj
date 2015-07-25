@@ -16,6 +16,7 @@
 		3AF86EAC1B63BA7600719F63 /* MoviesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */; };
 		3AF86EB61B63BA9000719F63 /* APIConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EB51B63BA9000719F63 /* APIConnector.swift */; };
 		3AF86EB81B63BAC700719F63 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3AF86EB71B63BAC700719F63 /* Settings.bundle */; };
+		3AF86EBA1B63DD4500719F63 /* silence.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3AF86EB91B63DC8A00719F63 /* silence.m4a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTests.swift; sourceTree = "<group>"; };
 		3AF86EB51B63BA9000719F63 /* APIConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIConnector.swift; sourceTree = "<group>"; };
 		3AF86EB71B63BAC700719F63 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		3AF86EB91B63DC8A00719F63 /* silence.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.m4a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				3AF86E971B63BA7500719F63 /* DetailViewController.swift */,
 				3AF86EB51B63BA9000719F63 /* APIConnector.swift */,
 				3AF86E991B63BA7500719F63 /* Main.storyboard */,
+				3AF86EB91B63DC8A00719F63 /* silence.m4a */,
 				3AF86E9C1B63BA7500719F63 /* Images.xcassets */,
 				3AF86E9E1B63BA7500719F63 /* LaunchScreen.xib */,
 				3AF86E911B63BA7500719F63 /* Supporting Files */,
@@ -210,6 +213,7 @@
 				3AF86E9B1B63BA7500719F63 /* Main.storyboard in Resources */,
 				3AF86EA01B63BA7500719F63 /* LaunchScreen.xib in Resources */,
 				3AF86E9D1B63BA7500719F63 /* Images.xcassets in Resources */,
+				3AF86EBA1B63DD4500719F63 /* silence.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

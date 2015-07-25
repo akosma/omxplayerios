@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import AVFoundation
+import MediaPlayer
+
 
 class DetailViewController: UIViewController {
     
     var currentMovieName = ""
+    var player : AVAudioPlayer!
     
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     
@@ -26,6 +30,8 @@ class DetailViewController: UIViewController {
         
         let OKAction = UIAlertAction(title: "Yes", style: .Default) { (action) in
             APIConnector.sharedInstance.stopMovie()
+            UIApplication.sharedApplication().endReceivingRemoteControlEvents()
+            self.resignFirstResponder()
             self.dismissViewControllerAnimated(true, completion: nil)
         }
         alertController.addAction(OKAction)
@@ -51,18 +57,29 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         self.becomeFirstResponder()
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        UIApplication.sharedApplication().endReceivingRemoteControlEvents()
-        self.resignFirstResponder()
+
+        // Configure audio session
+        let sess = AVAudioSession.sharedInstance()
+        sess.setCategory(AVAudioSessionCategoryPlayback, withOptions: nil, error: nil)
+        sess.setActive(true, withOptions: nil, error: nil)
+        
+        // Load a silent file to start playback on the device
+        // This is required to get remote control events…
+        let path = NSBundle.mainBundle().pathForResource("silence", ofType: "m4a")!
+        let fileURL = NSURL(fileURLWithPath: path)
+        self.player = AVAudioPlayer(contentsOfURL: fileURL, error: nil)
+        // Play forever, at a very low volume
+        self.player.numberOfLoops = -1
+        self.player.volume = 0.0
+        self.player.play()
+        
+        let mpic = MPNowPlayingInfoCenter.defaultCenter()
+        mpic.nowPlayingInfo = [
+            MPMediaItemPropertyTitle: currentMovieName,
+            MPMediaItemPropertyArtist: "Raspberry Pi"
+        ]
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -74,7 +91,10 @@ class DetailViewController: UIViewController {
             switch (event.subtype) {
             case .RemoteControlPlay:
                 APIConnector.sharedInstance.sendCommand(.Pause)
-
+                
+            case .RemoteControlPause:
+                APIConnector.sharedInstance.sendCommand(.Pause)
+                
             case .RemoteControlNextTrack:
                 APIConnector.sharedInstance.sendCommand(.Forward30Seconds)
                 
