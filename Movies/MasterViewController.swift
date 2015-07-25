@@ -11,8 +11,7 @@ import UIKit
 class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
-    var objects = [String]()
-
+    var movies = [String]()
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,11 +23,12 @@ class MasterViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "showSettings:")
         self.navigationItem.rightBarButtonItem = addButton
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "refreshMovies:")
+        self.navigationItem.leftBarButtonItem = refreshButton
+
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
@@ -38,19 +38,20 @@ class MasterViewController: UITableViewController {
             selector: "movieListLoaded:",
             name: APIConnectorNotifications.MovieListReady.rawValue,
             object: nil)
-        
+
+        refreshMovies(nil)
+    }
+
+    // MARK: - Button event handlers
+    
+    func showSettings(sender: AnyObject?) {
+        if let appSettings = NSURL(string: UIApplicationOpenSettingsURLString) {
+            UIApplication.sharedApplication().openURL(appSettings)
+        }
+    }
+    
+    func refreshMovies(sender: AnyObject?) {
         APIConnector.sharedInstance.getMovieList()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    func insertNewObject(sender: AnyObject) {
-        objects.insert(NSDate().description, atIndex: 0)
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
     
     // MARK: - NSNotification handlers
@@ -58,10 +59,10 @@ class MasterViewController: UITableViewController {
     func movieListLoaded(notification: NSNotification) {
         if let userInfo = notification.userInfo,
             let data : AnyObject = userInfo["data" as NSObject],
-            let movies = data["response"] as? [String] {
-            objects = movies
+            let remoteMovies = data["response"] as? [String] {
+                movies = remoteMovies
+                tableView.reloadData()
         }
-        tableView.reloadData()
     }
 
     // MARK: - Segues
@@ -69,9 +70,11 @@ class MasterViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let object = objects[indexPath.row]
+                let movie = movies[indexPath.row]
+                APIConnector.sharedInstance.playMovie(movie)
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = object
+                controller.currentMovieName = movie
+                controller.detailItem = movie
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
                 controller.navigationItem.leftItemsSupplementBackButton = true
             }
@@ -85,31 +88,14 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        return movies.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
 
-        let object = objects[indexPath.row]
+        let object = movies[indexPath.row]
         cell.textLabel!.text = object
         return cell
     }
-
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            objects.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-        }
-    }
-
-
 }
-

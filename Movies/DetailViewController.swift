@@ -9,37 +9,48 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    
+    var currentMovieName = ""
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
-
+    
+    @IBAction func stopPlayback(sender: AnyObject) {
+        let alertController = UIAlertController(title: "Stop Playback of '\(currentMovieName)'",
+            message: "Are you sure?",
+            preferredStyle: .Alert)
+        
+        let cancelAction = UIAlertAction(title: "No", style: .Cancel) { (action) in
+            // Do nothing
+        }
+        alertController.addAction(cancelAction)
+        
+        let OKAction = UIAlertAction(title: "Yes", style: .Default) { (action) in
+            APIConnector.sharedInstance.stopMovie()
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        alertController.addAction(OKAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
 
     var detailItem: AnyObject? {
         didSet {
-            // Update the view.
             self.configureView()
         }
     }
 
     func configureView() {
-        // Update the user interface for the detail item.
         if let detail: AnyObject = self.detailItem {
+            self.navigationItem.title = detail.description
             if let label = self.detailDescriptionLabel {
-                label.text = detail.description
+                label.text = "Currently playing '\(currentMovieName)'"
             }
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
+        self.becomeFirstResponder()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
-
