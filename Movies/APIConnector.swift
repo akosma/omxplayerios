@@ -8,10 +8,24 @@
 
 import UIKit
 
-enum APIConnectorNotifications: String {
+enum APIConnectorNotifications : String {
     case MovieListReady = "MovieListReady"
     case MoviePlaying = "MoviePlaying"
     case MovieStopped = "MovieStopped"
+}
+
+enum APIConnectorMovieCommands : String {
+    case Backward30Seconds = "backward"
+    case Backward10Minutes = "backward10"
+    case Faster = "faster"
+    case Forward30Seconds = "forward"
+    case Forward10Minutes = "forward10"
+    case Info = "info"
+    case Pause = "pause"
+    case Slower = "slower"
+    case Subtitles = "subtitles"
+    case VolumeDown = "voldown"
+    case VolumeUp = "volup"
 }
 
 class APIConnector: NSObject {
@@ -68,6 +82,27 @@ class APIConnector: NSObject {
                     error: nil) {
                         dispatch_sync(dispatch_get_main_queue(), {
                             let notif = APIConnectorNotifications.MoviePlaying.rawValue
+                            NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                                object: self)
+                        })
+                }
+            }
+        )
+        task.resume()
+    }
+    
+    func sendCommand(command: APIConnectorMovieCommands) {
+        let str = "\(baseURLString)/command/\(command.rawValue)"
+        let url = NSURL(string: str)
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        let task = session.dataTaskWithRequest(request,
+            completionHandler: { (data, response, error) -> Void in
+                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.allZeros,
+                    error: nil) {
+                        dispatch_sync(dispatch_get_main_queue(), {
+                            let notif = APIConnectorNotifications.MovieStopped.rawValue
                             NSNotificationCenter.defaultCenter().postNotificationName(notif,
                                 object: self)
                         })

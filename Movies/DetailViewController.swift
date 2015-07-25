@@ -11,7 +11,7 @@ import UIKit
 class DetailViewController: UIViewController {
     
     var currentMovieName = ""
-
+    
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     
     @IBAction func stopPlayback(sender: AnyObject) {
@@ -32,13 +32,13 @@ class DetailViewController: UIViewController {
         
         self.presentViewController(alertController, animated: true, completion: nil)
     }
-
+    
     var detailItem: AnyObject? {
         didSet {
             self.configureView()
         }
     }
-
+    
     func configureView() {
         if let detail: AnyObject = self.detailItem {
             self.navigationItem.title = detail.description
@@ -47,10 +47,43 @@ class DetailViewController: UIViewController {
             }
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         self.becomeFirstResponder()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        UIApplication.sharedApplication().endReceivingRemoteControlEvents()
+        self.resignFirstResponder()
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
+        if event.type == .RemoteControl {
+            switch (event.subtype) {
+            case .RemoteControlPlay:
+                APIConnector.sharedInstance.sendCommand(.Pause)
+
+            case .RemoteControlNextTrack:
+                APIConnector.sharedInstance.sendCommand(.Forward30Seconds)
+                
+            case .RemoteControlPreviousTrack:
+                APIConnector.sharedInstance.sendCommand(.Backward30Seconds)
+                
+            default:
+                break;
+            }
+        }
     }
 }
