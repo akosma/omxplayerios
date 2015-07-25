@@ -15,6 +15,7 @@ class DetailViewController: UIViewController {
     
     var currentMovieName = ""
     var player : AVAudioPlayer!
+    var currentVolume : Float = 0.5
 
     // MARK: - IBAction methods
     
@@ -36,7 +37,7 @@ class DetailViewController: UIViewController {
         }
         alertController.addAction(OKAction)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     @IBAction func pausePlayback(sender: AnyObject) {
@@ -65,24 +66,28 @@ class DetailViewController: UIViewController {
     
     var detailItem: AnyObject? {
         didSet {
-            self.configureView()
+            configureView()
         }
     }
     
     func configureView() {
-        if let detail: AnyObject = self.detailItem {
-            self.navigationItem.title = detail.description
+        if let detail: AnyObject = detailItem {
+            navigationItem.title = detail.description
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureView()
+        configureView()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        self.becomeFirstResponder()
+        becomeFirstResponder()
 
         // Configure audio session
         let sess = AVAudioSession.sharedInstance()
+        sess.addObserver(self,
+            forKeyPath: "outputVolume",
+            options: NSKeyValueObservingOptions.allZeros,
+            context: nil)
         sess.setCategory(AVAudioSessionCategoryPlayback, withOptions: nil, error: nil)
         sess.setActive(true, withOptions: nil, error: nil)
         
@@ -90,17 +95,37 @@ class DetailViewController: UIViewController {
         // This is required to get remote control events…
         let path = NSBundle.mainBundle().pathForResource("silence", ofType: "m4a")!
         let fileURL = NSURL(fileURLWithPath: path)
-        self.player = AVAudioPlayer(contentsOfURL: fileURL, error: nil)
+        player = AVAudioPlayer(contentsOfURL: fileURL, error: nil)
         // Play forever, at a very low volume
-        self.player.numberOfLoops = -1
-        self.player.volume = 0.0
-        self.player.play()
+        player.numberOfLoops = -1
+        player.volume = currentVolume
+        player.play()
         
         let mpic = MPNowPlayingInfoCenter.defaultCenter()
         mpic.nowPlayingInfo = [
             MPMediaItemPropertyTitle: currentMovieName,
             MPMediaItemPropertyArtist: "Raspberry Pi"
         ]
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+    }
+    
+    override func observeValueForKeyPath(keyPath: String,
+        ofObject object: AnyObject,
+        change: [NSObject : AnyObject],
+        context: UnsafeMutablePointer<Void>) {
+            let newVolume = (object.valueForKey("outputVolume") as! NSNumber).floatValue
+            if newVolume > currentVolume {
+                APIConnector.sharedInstance.sendCommand(.VolumeUp)
+            }
+            else {
+                APIConnector.sharedInstance.sendCommand(.VolumeDown)
+            }
+            currentVolume = newVolume
+            println("New volume: \(currentVolume)")
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -112,16 +137,27 @@ class DetailViewController: UIViewController {
             switch (event.subtype) {
             case .RemoteControlPlay:
                 APIConnector.sharedInstance.sendCommand(.Pause)
+                player.play()
                 
             case .RemoteControlPause:
                 APIConnector.sharedInstance.sendCommand(.Pause)
+                player.pause()
+                
+            case .RemoteControlTogglePlayPause:
+                APIConnector.sharedInstance.sendCommand(.Pause)
+                if player.playing {
+                    player.pause()
+                }
+                else {
+                    player.play()
+                }
                 
             case .RemoteControlNextTrack:
                 APIConnector.sharedInstance.sendCommand(.Forward30Seconds)
                 
             case .RemoteControlPreviousTrack:
                 APIConnector.sharedInstance.sendCommand(.Backward30Seconds)
-                
+
             default:
                 break;
             }
