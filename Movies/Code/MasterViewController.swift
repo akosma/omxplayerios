@@ -35,13 +35,21 @@ class MasterViewController: UITableViewController {
             self.detailViewController = controllers[controllers.count-1].topViewController as? DetailViewController
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        let center = NSNotificationCenter.defaultCenter()
+        
+        center.addObserver(self,
             selector: "movieListLoaded:",
             name: APIConnectorNotifications.MovieListReady.rawValue,
             object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "currentMovie:",
+        center.addObserver(self,
+            selector: "currentMovie:",
             name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
+            object: nil)
+        
+        center.addObserver(self,
+            selector: "didBecomeActive:",
+            name: UIApplicationDidBecomeActiveNotification,
             object: nil)
     }
     
@@ -73,6 +81,10 @@ class MasterViewController: UITableViewController {
                 movies = remoteMovies
                 tableView.reloadData()
         }
+    }
+    
+    func didBecomeActive(notification: NSNotification) {
+        APIConnector.sharedInstance.getCurrentMovie()
     }
     
     func currentMovie(notification: NSNotification) {
