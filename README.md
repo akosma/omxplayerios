@@ -5,7 +5,7 @@ application.
 
 ## Credits
 
-- Icons from [iconarchive](iconarchive)
+- Icons from [Oxygen Team](oxygen)
 
-[iconarchive](http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Actions-media-playback-start-icon.html)
+[oxygen](http://www.iconarchive.com/artist/oxygen-icons.org.html)
 
