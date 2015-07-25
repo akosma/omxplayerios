@@ -11,6 +11,7 @@ import UIKit
 class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
+    var selectedMovieTitle : String? = nil
     var movies = [String]()
 
     override func awakeFromNib() {
@@ -38,7 +39,16 @@ class MasterViewController: UITableViewController {
             selector: "movieListLoaded:",
             name: APIConnectorNotifications.MovieListReady.rawValue,
             object: nil)
-
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "currentMovie:",
+            name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
+            object: nil)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        selectedMovieTitle = nil
+        APIConnector.sharedInstance.getCurrentMovie()
         refreshMovies(nil)
     }
 
@@ -64,20 +74,31 @@ class MasterViewController: UITableViewController {
                 tableView.reloadData()
         }
     }
+    
+    func currentMovie(notification: NSNotification) {
+        if let userInfo = notification.userInfo,
+            let data = userInfo["movieName"] as? String {
+                selectedMovieTitle = data
+                self.performSegueWithIdentifier("showDetail", sender: self)
+        }
+    }
 
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
-            if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let movie = movies[indexPath.row]
-                APIConnector.sharedInstance.playMovie(movie)
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-                controller.currentMovieName = movie
-                controller.detailItem = movie
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-                controller.navigationItem.leftItemsSupplementBackButton = true
+            
+            var movie : String = ""
+            if let notificationMovie = selectedMovieTitle {
+                movie = notificationMovie
             }
+            else if let indexPath = self.tableView.indexPathForSelectedRow() {
+                movie = movies[indexPath.row]
+            }
+            APIConnector.sharedInstance.playMovie(movie)
+            let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+            controller.currentMovieName = movie
+            controller.detailItem = movie
         }
     }
 

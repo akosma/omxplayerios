@@ -12,6 +12,8 @@ enum APIConnectorNotifications : String {
     case MovieListReady = "MovieListReady"
     case MoviePlaying = "MoviePlaying"
     case MovieStopped = "MovieStopped"
+    case CommandSent = "CommandSent"
+    case CurrentMovieReceived = "CurrentMovieReceived"
 }
 
 enum APIConnectorMovieCommands : String {
@@ -41,6 +43,37 @@ class APIConnector: NSObject {
             baseURLString = "http://192.168.1.128:3000"
             NSUserDefaults.standardUserDefaults().setObject(baseURLString, forKey: "server_url")
         }
+    }
+    
+    func getCurrentMovie() {
+        let url = NSURL(string: "\(baseURLString)/current_movie")
+        let request = NSURLRequest(URL: url!)
+        let task = session.dataTaskWithRequest(request,
+            completionHandler: { (data, response, error) -> Void in
+                var error : NSErrorPointer = nil
+                if let json = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.allZeros,
+                    error: error) as? [String : String] {
+                        if (error == nil) {
+                            var userInfo : [String : String]?
+                            if let method = json["method"] {
+                                if method == "current_movie" {
+                                    userInfo = [
+                                        "movieName": json["response"]!
+                                    ]
+                                }
+                            }
+                            dispatch_sync(dispatch_get_main_queue(), {
+                                var notif = APIConnectorNotifications.CurrentMovieReceived.rawValue
+                                NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                                    object: self,
+                                    userInfo: userInfo)
+                            })
+                        }
+                }
+            }
+        )
+        task.resume()
     }
     
     func getMovieList() {
@@ -102,7 +135,7 @@ class APIConnector: NSObject {
                     options: NSJSONReadingOptions.allZeros,
                     error: nil) {
                         dispatch_sync(dispatch_get_main_queue(), {
-                            let notif = APIConnectorNotifications.MovieStopped.rawValue
+                            let notif = APIConnectorNotifications.CommandSent.rawValue
                             NSNotificationCenter.defaultCenter().postNotificationName(notif,
                                 object: self)
                         })
