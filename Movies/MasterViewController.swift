@@ -25,7 +25,7 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "showSettings:")
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "showSettings:")
         self.navigationItem.rightBarButtonItem = addButton
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "refreshMovies:")
         self.navigationItem.leftBarButtonItem = refreshButton
