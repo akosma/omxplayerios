@@ -23,6 +23,7 @@
 		3AAF44681B63F0A7001740B4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AAF44591B63F0A7001740B4 /* LaunchScreen.xib */; };
 		3AAF44691B63F0A7001740B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AAF445A1B63F0A7001740B4 /* Main.storyboard */; };
 		3AF86EAC1B63BA7600719F63 /* MoviesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */; };
+		D264AED4A4F56B60D8C2E7BC /* Pods_Movies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,9 @@
 		3AF86EA51B63BA7600719F63 /* MoviesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoviesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AF86EAA1B63BA7600719F63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTests.swift; sourceTree = "<group>"; };
+		ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Movies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF4A9681F00E0746E422CA8A /* Pods-Movies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Movies/Pods-Movies.release.xcconfig"; sourceTree = "<group>"; };
+		E779C311F758883F8C3848D8 /* Pods-Movies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movies.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Movies/Pods-Movies.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D264AED4A4F56B60D8C2E7BC /* Pods_Movies.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +148,8 @@
 				3AF86E901B63BA7500719F63 /* Movies */,
 				3AF86EA81B63BA7600719F63 /* MoviesTests */,
 				3AF86E8F1B63BA7500719F63 /* Products */,
+				D562897347B272EDC02C3581 /* Pods */,
+				6EF3CBBD30DAC4C99E50425E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -190,6 +197,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		6EF3CBBD30DAC4C99E50425E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D562897347B272EDC02C3581 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E779C311F758883F8C3848D8 /* Pods-Movies.debug.xcconfig */,
+				DF4A9681F00E0746E422CA8A /* Pods-Movies.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -197,9 +221,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3AF86EAF1B63BA7600719F63 /* Build configuration list for PBXNativeTarget "Movies" */;
 			buildPhases = (
+				C802CF0DFA0339148BABE4AC /* Check Pods Manifest.lock */,
 				3AF86E8A1B63BA7500719F63 /* Sources */,
 				3AF86E8B1B63BA7500719F63 /* Frameworks */,
 				3AF86E8C1B63BA7500719F63 /* Resources */,
+				D3DAF97BF3808F67F1BB747C /* Embed Pods Frameworks */,
+				72C47679556A3D1A16325C0F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -298,6 +325,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		72C47679556A3D1A16325C0F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Movies/Pods-Movies-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C802CF0DFA0339148BABE4AC /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D3DAF97BF3808F67F1BB747C /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Movies/Pods-Movies-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3AF86E8A1B63BA7500719F63 /* Sources */ = {
@@ -415,6 +490,7 @@
 		};
 		3AF86EB01B63BA7600719F63 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E779C311F758883F8C3848D8 /* Pods-Movies.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -428,6 +504,7 @@
 		};
 		3AF86EB11B63BA7600719F63 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DF4A9681F00E0746E422CA8A /* Pods-Movies.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
