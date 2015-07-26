@@ -57,5 +57,6 @@ Check the LICENSE file for details.
 [omxplayernode]:https://github.com/akosma/omxplayernode
 [omxplayerphp]:https://github.com/akosma/omxplayerphp
 [oxygen]:http://www.iconarchive.com/artist/oxygen-icons.org.html
+[raspi]:https://www.raspberrypi.org
 [socketio]:http://socket.io
 
