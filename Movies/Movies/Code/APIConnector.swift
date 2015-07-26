@@ -33,15 +33,14 @@ enum APIConnectorMovieCommands : String {
 class APIConnector: NSObject {
     static let sharedInstance = APIConnector()
     let session = NSURLSession.sharedSession()
-    let baseURLString : String
-    
-    override init() {
-        if let preference = NSUserDefaults.standardUserDefaults().stringForKey("server_url") {
-            baseURLString = preference
-        }
-        else {
-            baseURLString = "http://192.168.1.128:3000"
-            NSUserDefaults.standardUserDefaults().setObject(baseURLString, forKey: "server_url")
+    var baseURLString : String {
+        get {
+            if let preference = NSUserDefaults.standardUserDefaults().stringForKey("server_url") {
+                return preference
+            }
+            let result = "http://192.168.1.128:3000"
+            NSUserDefaults.standardUserDefaults().setObject(result, forKey: "server_url")
+            return result
         }
     }
     
