@@ -84,10 +84,10 @@
 		3AAF44461B63F0A7001740B4 /* Code */ = {
 			isa = PBXGroup;
 			children = (
-				3AAF44471B63F0A7001740B4 /* APIConnector.swift */,
 				3AAF44481B63F0A7001740B4 /* AppDelegate.swift */,
-				3AAF44491B63F0A7001740B4 /* DetailViewController.swift */,
+				3AAF44471B63F0A7001740B4 /* APIConnector.swift */,
 				3AAF444A1B63F0A7001740B4 /* MasterViewController.swift */,
+				3AAF44491B63F0A7001740B4 /* DetailViewController.swift */,
 			);
 			path = Code;
 			sourceTree = "<group>";

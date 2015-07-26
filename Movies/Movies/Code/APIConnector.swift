@@ -7,14 +7,16 @@
 //
 
 import UIKit
+import Socket_IO_Client_Swift
 
 enum APIConnectorNotifications : String {
     case MovieListReady = "MovieListReady"
+    case DiskSpaceAvailable = "DiskSpaceAvailable"
+    case CurrentMovieReceived = "CurrentMovieReceived"
+    case NoCurrentMoviePlaying = "NoCurrentMoviePlaying"
     case MoviePlaying = "MoviePlaying"
     case MovieStopped = "MovieStopped"
     case CommandSent = "CommandSent"
-    case CurrentMovieReceived = "CurrentMovieReceived"
-    case DiskSpaceAvailable = "DiskSpaceAvailable"
 }
 
 enum APIConnectorMovieCommands : String {
@@ -44,150 +46,101 @@ class APIConnector: NSObject {
             return result
         }
     }
+    var socket : SocketIOClient?
     
-    func getCurrentMovie() {
-        let url = NSURL(string: "\(baseURLString)/current_movie")
-        let request = NSURLRequest(URL: url!)
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                var error : NSErrorPointer = nil
-                if let json = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: error) as? [String : String] {
-                        if (error == nil) {
-                            var userInfo : [String : String]?
-                            if let method = json["method"] {
-                                if method == "current_movie" {
-                                    userInfo = [
-                                        "movieName": json["response"]!
-                                    ]
-                                }
-                            }
-                            dispatch_sync(dispatch_get_main_queue(), {
-                                var notif = APIConnectorNotifications.CurrentMovieReceived.rawValue
-                                NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                    object: self,
-                                    userInfo: userInfo)
-                            })
-                        }
-                }
+    func connect() {
+        socket = SocketIOClient(socketURL: baseURLString)
+        
+        socket?.on("welcome") { data, ack in
+            println("socket connected")
+        }
+        
+        socket?.on("movies") { data, ack in
+            println("received 'movies'")
+            if let responseArray = data,
+                let responseDictionary = responseArray[0] as? [String : AnyObject],
+                let movieArray = responseDictionary["response"] as? [String] {
+                    let userInfo : [NSObject : NSArray] = [
+                        "data": movieArray
+                    ]
+                    let notif = APIConnectorNotifications.MovieListReady.rawValue
+                    NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                        object: self,
+                        userInfo: userInfo)
             }
-        )
-        task.resume()
+        }
+        
+        socket?.on("disk") { data, ack in
+            println("received 'disk'")
+            if let responseArray = data,
+                let responseDictionary = responseArray[0] as? [String : AnyObject],
+                let diskSpace = responseDictionary["response"] as? String {
+                    let userInfo : [NSObject : String] = [
+                        "data": diskSpace
+                    ]
+                    let notif = APIConnectorNotifications.DiskSpaceAvailable.rawValue
+                    NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                        object: self,
+                        userInfo: userInfo)
+            }
+        }
+        
+        socket?.on("current_movie") { data, ack in
+            println("received 'current_movie'")
+            if let responseArray = data,
+                let responseDictionary = responseArray[0] as? [String : AnyObject],
+                let method = responseDictionary["method"] as? String,
+                let currentMovie = responseDictionary["response"] as? String {
+                    let userInfo : [NSObject : String] = [
+                        "data": currentMovie
+                    ]
+                    var notif = APIConnectorNotifications.CurrentMovieReceived.rawValue
+                    if (method == "error") {
+                        notif = APIConnectorNotifications.NoCurrentMoviePlaying.rawValue
+                    }
+                    NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                        object: self,
+                        userInfo: userInfo)
+            }
+        }
+        
+        socket?.on("stop") { data, ack in
+            println("received 'stop'")
+            var notif = APIConnectorNotifications.MovieStopped.rawValue
+            NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                object: self)
+        }
+        
+        socket?.connect()
     }
-    
+
     func getMovieList() {
-        let url = NSURL(string: "\(baseURLString)/movies")
-        let request = NSURLRequest(URL: url!)
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                var error : NSErrorPointer = nil
-                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: error) {
-                        if (error == nil) {
-                            let userInfo : [NSObject : AnyObject] = [
-                                "data": json!
-                            ]
-                            dispatch_sync(dispatch_get_main_queue(), {
-                                let notif = APIConnectorNotifications.MovieListReady.rawValue
-                                NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                    object: self,
-                                    userInfo: userInfo)
-                            })
-                        }
-                }
-            }
-        )
-        task.resume()
+        println("emitting 'movies'")
+        socket?.emit("movies")
     }
     
     func getAvailableDiskSpace() {
-        let url = NSURL(string: "\(baseURLString)/disk")
-        let request = NSURLRequest(URL: url!)
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                var error : NSErrorPointer = nil
-                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: error) {
-                        if (error == nil) {
-                            let userInfo : [NSObject : AnyObject] = [
-                                "data": json!
-                            ]
-                            dispatch_sync(dispatch_get_main_queue(), {
-                                let notif = APIConnectorNotifications.DiskSpaceAvailable.rawValue
-                                NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                    object: self,
-                                    userInfo: userInfo)
-                            })
-                        }
-                }
-        })
-        task.resume()
+        println("emitting 'disk'")
+        socket?.emit("disk")
+    }
+    
+    func getCurrentMovie() {
+        println("emitting 'current_movie'")
+        socket?.emit("current_movie")
     }
     
     func playMovie(movie: String) {
-        let escapedMovie = movie.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
-        let str = "\(baseURLString)/play/\(escapedMovie)"
-        let url = NSURL(string: str)
-        let request = NSMutableURLRequest(URL: url!)
-        request.HTTPMethod = "POST"
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: nil) {
-                        dispatch_sync(dispatch_get_main_queue(), {
-                            let notif = APIConnectorNotifications.MoviePlaying.rawValue
-                            NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                object: self)
-                        })
-                }
-            }
-        )
-        task.resume()
+        println("emitting 'play \(movie)'")
+        socket?.emit("play", movie)
     }
     
     func sendCommand(command: APIConnectorMovieCommands) {
-        let str = "\(baseURLString)/command/\(command.rawValue)"
-        let url = NSURL(string: str)
-        let request = NSMutableURLRequest(URL: url!)
-        request.HTTPMethod = "POST"
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: nil) {
-                        dispatch_sync(dispatch_get_main_queue(), {
-                            let notif = APIConnectorNotifications.CommandSent.rawValue
-                            NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                object: self)
-                        })
-                }
-            }
-        )
-        task.resume()
+        println("emitting 'command \(command.rawValue)'")
+        socket?.emit("command", command.rawValue)
     }
 
     func stopMovie() {
-        let str = "\(baseURLString)/stop"
-        let url = NSURL(string: str)
-        let request = NSMutableURLRequest(URL: url!)
-        request.HTTPMethod = "POST"
-        let task = session.dataTaskWithRequest(request,
-            completionHandler: { (data, response, error) -> Void in
-                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.allZeros,
-                    error: nil) {
-                        dispatch_sync(dispatch_get_main_queue(), {
-                            let notif = APIConnectorNotifications.MovieStopped.rawValue
-                            NSNotificationCenter.defaultCenter().postNotificationName(notif,
-                                object: self)
-                        })
-                }
-            }
-        )
-        task.resume()
+        println("emitting 'stop'")
+        socket?.emit("stop")
     }
 }

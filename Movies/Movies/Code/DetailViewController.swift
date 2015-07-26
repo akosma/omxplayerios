@@ -20,23 +20,20 @@ class DetailViewController: UIViewController {
     // MARK: - IBAction methods
     
     @IBAction func stopPlayback(sender: AnyObject) {
+        let cancelAction = UIAlertAction(title: "No", style: .Cancel) { action in
+            // Do nothing
+        }
+        
+        let OKAction = UIAlertAction(title: "Yes", style: .Default) { action in
+            APIConnector.sharedInstance.stopMovie()
+            self.stop()
+        }
+
         let alertController = UIAlertController(title: "Stop Playback of '\(currentMovieName)'",
             message: "Are you sure?",
             preferredStyle: .Alert)
-        
-        let cancelAction = UIAlertAction(title: "No", style: .Cancel) { (action) in
-            // Do nothing
-        }
         alertController.addAction(cancelAction)
-        
-        let OKAction = UIAlertAction(title: "Yes", style: .Default) { (action) in
-            APIConnector.sharedInstance.stopMovie()
-            UIApplication.sharedApplication().endReceivingRemoteControlEvents()
-            self.resignFirstResponder()
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
         alertController.addAction(OKAction)
-        
         presentViewController(alertController, animated: true, completion: nil)
     }
     
@@ -64,24 +61,16 @@ class DetailViewController: UIViewController {
         APIConnector.sharedInstance.sendCommand(APIConnectorMovieCommands.Subtitles)
     }
     
-    var detailItem: AnyObject? {
-        didSet {
-            configureView()
-        }
+    // MARK: - NSNotification handlers
+    
+    func movieStopped(notification: NSNotification) {
+        self.stop()
     }
     
-    func configureView() {
-        if let detail: AnyObject = detailItem {
-            navigationItem.title = detail.description
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureView()
+    func play() {
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         becomeFirstResponder()
-
+        
         // Configure audio session
         let sess = AVAudioSession.sharedInstance()
         sess.addObserver(self,
@@ -106,11 +95,44 @@ class DetailViewController: UIViewController {
             MPMediaItemPropertyTitle: currentMovieName,
             MPMediaItemPropertyArtist: "Raspberry Pi"
         ]
+        
+        let center = NSNotificationCenter.defaultCenter()
+        center.addObserver(self,
+            selector: "movieStopped:",
+            name: APIConnectorNotifications.MovieStopped.rawValue,
+            object: nil)
+
+        APIConnector.sharedInstance.playMovie(currentMovieName)
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+    func stop() {
+        player.stop()
+        UIApplication.sharedApplication().endReceivingRemoteControlEvents()
+        resignFirstResponder()
         AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    var detailItem: AnyObject? {
+        didSet {
+            configureView()
+        }
+    }
+    
+    func configureView() {
+        if let detail: AnyObject = detailItem {
+            navigationItem.title = detail.description
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureView()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        play();
     }
     
     override func observeValueForKeyPath(keyPath: String,

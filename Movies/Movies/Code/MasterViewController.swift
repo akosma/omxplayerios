@@ -57,6 +57,8 @@ class MasterViewController: UITableViewController {
             selector: "didBecomeActive:",
             name: UIApplicationDidBecomeActiveNotification,
             object: nil)
+        
+        APIConnector.sharedInstance.connect()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -83,10 +85,25 @@ class MasterViewController: UITableViewController {
     
     func movieListLoaded(notification: NSNotification) {
         if let userInfo = notification.userInfo,
-            let data : AnyObject = userInfo["data" as NSObject],
-            let remoteMovies = data["response"] as? [String] {
+            let remoteMovies = userInfo["data"] as? [String] {
                 movies = remoteMovies
                 tableView.reloadData()
+        }
+    }
+    
+    func diskSpaceLoaded(notification: NSNotification) {
+        if let userInfo = notification.userInfo,
+            let data = userInfo["data"] as? String {
+                diskSpaceAvailable = data
+                tableView.reloadData()
+        }
+    }
+    
+    func currentMovie(notification: NSNotification) {
+        if let userInfo = notification.userInfo,
+            let data = userInfo["data"] as? String {
+                selectedMovieTitle = data
+                self.performSegueWithIdentifier("showDetail", sender: self)
         }
     }
     
@@ -94,23 +111,6 @@ class MasterViewController: UITableViewController {
         APIConnector.sharedInstance.getCurrentMovie()
     }
     
-    func currentMovie(notification: NSNotification) {
-        if let userInfo = notification.userInfo,
-            let data = userInfo["movieName"] as? String {
-                selectedMovieTitle = data
-                self.performSegueWithIdentifier("showDetail", sender: self)
-        }
-    }
-    
-    func diskSpaceLoaded(notification: NSNotification) {
-        if let userInfo = notification.userInfo,
-            let data : AnyObject = userInfo["data" as NSObject],
-            let space = data["response"] as? String {
-                diskSpaceAvailable = space
-                tableView.reloadData()
-        }
-    }
-
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -123,7 +123,6 @@ class MasterViewController: UITableViewController {
             else if let indexPath = self.tableView.indexPathForSelectedRow() {
                 movie = movies[indexPath.row]
             }
-            APIConnector.sharedInstance.playMovie(movie)
             let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             controller.currentMovieName = movie
             controller.detailItem = movie
