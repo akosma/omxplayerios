@@ -14,6 +14,7 @@ enum APIConnectorNotifications : String {
     case MovieStopped = "MovieStopped"
     case CommandSent = "CommandSent"
     case CurrentMovieReceived = "CurrentMovieReceived"
+    case DiskSpaceAvailable = "DiskSpaceAvailable"
 }
 
 enum APIConnectorMovieCommands : String {
@@ -98,6 +99,31 @@ class APIConnector: NSObject {
                 }
             }
         )
+        task.resume()
+    }
+    
+    func getAvailableDiskSpace() {
+        let url = NSURL(string: "\(baseURLString)/disk")
+        let request = NSURLRequest(URL: url!)
+        let task = session.dataTaskWithRequest(request,
+            completionHandler: { (data, response, error) -> Void in
+                var error : NSErrorPointer = nil
+                if let json : AnyObject? = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.allZeros,
+                    error: error) {
+                        if (error == nil) {
+                            let userInfo : [NSObject : AnyObject] = [
+                                "data": json!
+                            ]
+                            dispatch_sync(dispatch_get_main_queue(), {
+                                let notif = APIConnectorNotifications.DiskSpaceAvailable.rawValue
+                                NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                                    object: self,
+                                    userInfo: userInfo)
+                            })
+                        }
+                }
+        })
         task.resume()
     }
     

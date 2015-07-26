@@ -13,6 +13,7 @@ class MasterViewController: UITableViewController {
     var detailViewController: DetailViewController? = nil
     var selectedMovieTitle : String? = nil
     var movies = [String]()
+    var diskSpaceAvailable = ""
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -48,6 +49,11 @@ class MasterViewController: UITableViewController {
             object: nil)
         
         center.addObserver(self,
+            selector: "diskSpaceLoaded:",
+            name: APIConnectorNotifications.DiskSpaceAvailable.rawValue,
+            object: nil)
+        
+        center.addObserver(self,
             selector: "didBecomeActive:",
             name: UIApplicationDidBecomeActiveNotification,
             object: nil)
@@ -70,6 +76,7 @@ class MasterViewController: UITableViewController {
     
     func refreshMovies(sender: AnyObject?) {
         APIConnector.sharedInstance.getMovieList()
+        APIConnector.sharedInstance.getAvailableDiskSpace()
     }
     
     // MARK: - NSNotification handlers
@@ -92,6 +99,15 @@ class MasterViewController: UITableViewController {
             let data = userInfo["movieName"] as? String {
                 selectedMovieTitle = data
                 self.performSegueWithIdentifier("showDetail", sender: self)
+        }
+    }
+    
+    func diskSpaceLoaded(notification: NSNotification) {
+        if let userInfo = notification.userInfo,
+            let data : AnyObject = userInfo["data" as NSObject],
+            let space = data["response"] as? String {
+                diskSpaceAvailable = space
+                tableView.reloadData()
         }
     }
 
@@ -130,5 +146,9 @@ class MasterViewController: UITableViewController {
         let object = movies[indexPath.row]
         cell.textLabel!.text = object
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Available disk space: \(diskSpaceAvailable)"
     }
 }
