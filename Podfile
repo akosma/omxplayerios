@@ -4,11 +4,7 @@ platform :ios, '8.0'
 use_frameworks!
 xcodeproj 'Movies/Movies.xcodeproj'
 
-target 'Movies' do
+target 'APIConnector' do
     pod 'Socket.IO-Client-Swift', '~> 2.4.0'
-end
-
-target 'MoviesTests' do
-
 end
 
