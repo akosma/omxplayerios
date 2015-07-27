@@ -9,7 +9,6 @@
 import UIKit
 import AVFoundation
 import MediaPlayer
-import APIConnector
 
 
 class DetailViewController: UIViewController {
