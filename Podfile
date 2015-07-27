@@ -8,3 +8,7 @@ target 'Movies' do
     pod 'Socket.IO-Client-Swift', '~> 2.4.0'
 end
 
+target 'Movies WatchKit Extension' do
+    pod 'Socket.IO-Client-Swift', '~> 2.4.0'
+end
+

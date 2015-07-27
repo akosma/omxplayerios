@@ -32,6 +32,7 @@
 		3AAF44681B63F0A7001740B4 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AAF44591B63F0A7001740B4 /* LaunchScreen.xib */; };
 		3AAF44691B63F0A7001740B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AAF445A1B63F0A7001740B4 /* Main.storyboard */; };
 		3AF86EAC1B63BA7600719F63 /* MoviesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */; };
+		5FED2310A7D2366CD1B6488E /* Pods_Movies_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A422B651A12626E4D38AA95 /* Pods_Movies_WatchKit_Extension.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		927FE671CD1ADD83E9D42890 /* Pods_Movies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3A54906C1B66D69500132206 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -117,7 +127,10 @@
 		3AF86EAB1B63BA7600719F63 /* MoviesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTests.swift; sourceTree = "<group>"; };
 		54E989CD3836A91F7C390ACA /* Pods-Movies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movies.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Movies/Pods-Movies.debug.xcconfig"; sourceTree = "<group>"; };
 		570811413805413EC739DBB4 /* Pods_APIConnector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_APIConnector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A422B651A12626E4D38AA95 /* Pods_Movies_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Movies_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		982CC1547D3C3B8E3BF14AA5 /* Pods-Movies WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movies WatchKit Extension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Movies WatchKit Extension/Pods-Movies WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Movies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3CDD0DED9857F6D40417143 /* Pods-Movies WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movies WatchKit Extension.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Movies WatchKit Extension/Pods-Movies WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FED2310A7D2366CD1B6488E /* Pods_Movies_WatchKit_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +323,7 @@
 			children = (
 				ABFE02D68628BFFA7F4BA097 /* Pods_Movies.framework */,
 				570811413805413EC739DBB4 /* Pods_APIConnector.framework */,
+				8A422B651A12626E4D38AA95 /* Pods_Movies_WatchKit_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -318,6 +333,8 @@
 			children = (
 				54E989CD3836A91F7C390ACA /* Pods-Movies.debug.xcconfig */,
 				36506306453AFD7BEC78A0DE /* Pods-Movies.release.xcconfig */,
+				982CC1547D3C3B8E3BF14AA5 /* Pods-Movies WatchKit Extension.debug.xcconfig */,
+				E3CDD0DED9857F6D40417143 /* Pods-Movies WatchKit Extension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -329,9 +346,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3A248F161B66BA7300A5441E /* Build configuration list for PBXNativeTarget "Movies WatchKit Extension" */;
 			buildPhases = (
+				235686CAD8C44F1718AA2908 /* Check Pods Manifest.lock */,
 				3A248EF41B66BA7300A5441E /* Sources */,
 				3A248EF51B66BA7300A5441E /* Frameworks */,
 				3A248EF61B66BA7300A5441E /* Resources */,
+				3A54906C1B66D69500132206 /* CopyFiles */,
+				37C429C97B6913F7C5BBC07F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -499,6 +519,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		235686CAD8C44F1718AA2908 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		37C429C97B6913F7C5BBC07F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Movies WatchKit Extension/Pods-Movies WatchKit Extension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		45EC3BD27A805B488842E150 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,6 +661,7 @@
 /* Begin XCBuildConfiguration section */
 		3A248F111B66BA7300A5441E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 982CC1547D3C3B8E3BF14AA5 /* Pods-Movies WatchKit Extension.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -627,6 +678,7 @@
 		};
 		3A248F121B66BA7300A5441E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E3CDD0DED9857F6D40417143 /* Pods-Movies WatchKit Extension.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

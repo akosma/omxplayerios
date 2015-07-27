@@ -9,7 +9,7 @@
 import UIKit
 import Socket_IO_Client_Swift
 
-public enum APIConnectorNotifications : String {
+enum APIConnectorNotifications : String {
     case MovieListReady = "MovieListReady"
     case DiskSpaceAvailable = "DiskSpaceAvailable"
     case CurrentMovieReceived = "CurrentMovieReceived"
@@ -19,7 +19,7 @@ public enum APIConnectorNotifications : String {
     case CommandSent = "CommandSent"
 }
 
-public enum APIConnectorMovieCommands : String {
+enum APIConnectorMovieCommands : String {
     case Backward30Seconds = "backward"
     case Backward10Minutes = "backward10"
     case Faster = "faster"
@@ -33,8 +33,8 @@ public enum APIConnectorMovieCommands : String {
     case VolumeUp = "volup"
 }
 
-public class APIConnector: NSObject {
-    public static let sharedInstance = APIConnector()
+class APIConnector: NSObject {
+    static let sharedInstance = APIConnector()
     let session = NSURLSession.sharedSession()
     var baseURLString : String {
         get {
@@ -48,7 +48,7 @@ public class APIConnector: NSObject {
     }
     var socket : SocketIOClient?
     
-    public func connect() {
+    func connect() {
         socket = SocketIOClient(socketURL: baseURLString)
         
         socket?.on("welcome") { data, ack in
@@ -114,32 +114,32 @@ public class APIConnector: NSObject {
         socket?.connect()
     }
 
-    public func getMovieList() {
+    func getMovieList() {
         println("emitting 'movies'")
         socket?.emit("movies")
     }
     
-    public func getAvailableDiskSpace() {
+    func getAvailableDiskSpace() {
         println("emitting 'disk'")
         socket?.emit("disk")
     }
     
-    public func getCurrentMovie() {
+    func getCurrentMovie() {
         println("emitting 'current_movie'")
         socket?.emit("current_movie")
     }
     
-    public func playMovie(movie: String) {
+    func playMovie(movie: String) {
         println("emitting 'play \(movie)'")
         socket?.emit("play", movie)
     }
     
-    public func sendCommand(command: APIConnectorMovieCommands) {
+    func sendCommand(command: APIConnectorMovieCommands) {
         println("emitting 'command \(command.rawValue)'")
         socket?.emit("command", command.rawValue)
     }
 
-    public func stopMovie() {
+    func stopMovie() {
         println("emitting 'stop'")
         socket?.emit("stop")
     }
