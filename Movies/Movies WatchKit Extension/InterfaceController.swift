@@ -16,19 +16,6 @@ class InterfaceController: WKInterfaceController {
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-
-        let center = NSNotificationCenter.defaultCenter()
-        
-        center.addObserver(self,
-            selector: "movieListLoaded:",
-            name: APIConnectorNotifications.MovieListReady.rawValue,
-            object: nil)
-        
-        center.addObserver(self,
-            selector: "currentMovie:",
-            name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
-            object: nil)
-
         APIConnector.sharedInstance.connect()
     }
 
@@ -58,9 +45,29 @@ class InterfaceController: WKInterfaceController {
             let movieName = movies[rowIndex]
             return movieName
     }
+    
+    override func didDeactivate() {
+        let center = NSNotificationCenter.defaultCenter()
+        center.removeObserver(self)
+
+        super.didDeactivate()
+    }
 
     override func willActivate() {
         super.willActivate()
+        
+        let center = NSNotificationCenter.defaultCenter()
+        
+        center.addObserver(self,
+            selector: "movieListLoaded:",
+            name: APIConnectorNotifications.MovieListReady.rawValue,
+            object: nil)
+        
+        center.addObserver(self,
+            selector: "currentMovie:",
+            name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
+            object: nil)
+
         APIConnector.sharedInstance.getMovieList()
         APIConnector.sharedInstance.getCurrentMovie()
     }
