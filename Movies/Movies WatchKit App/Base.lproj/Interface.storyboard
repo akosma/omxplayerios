@@ -5,14 +5,14 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
     </dependencies>
     <scenes>
-        <!--Interface Controller-->
+        <!--Movies-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Movies_WatchKit_App" customModuleProvider="target">
+                <controller title="Movies" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="Movies_WatchKit_App" customModuleProvider="target">
                     <items>
                         <table alignment="left" id="UJ5-pi-9GB">
                             <items>
-                                <tableRow identifier="MovieRow" id="HYm-nl-mor" customClass="MovieController" customModule="Movies_WatchKit_Extension">
+                                <tableRow identifier="MovieRow" id="HYm-nl-mor" customClass="MovieListRowController" customModule="Movies_WatchKit_Extension">
                                     <group key="rootItem" width="1" alignment="left" id="YD6-rT-KsD">
                                         <items>
                                             <label width="132.5" height="39.5" alignment="left" text="Label" id="H0x-Mo-PQY"/>
@@ -33,10 +33,10 @@
             </objects>
             <point key="canvasLocation" x="510" y="337"/>
         </scene>
-        <!--MovieController-->
+        <!--PlayMovieController-->
         <scene sceneID="yCs-IO-7XR">
             <objects>
-                <controller identifier="MovieController" id="Mls-18-yOG" customClass="MovieInterfaceController" customModule="Movies_WatchKit_Extension">
+                <controller identifier="PlayMovieController" id="Mls-18-yOG" customClass="MovieInterfaceController" customModule="Movies_WatchKit_Extension">
                     <items>
                         <label width="133.5" height="35.5" alignment="left" text="Label" id="EGj-dQ-edF"/>
                         <button width="1" alignment="left" title="Stop Movie" id="mgT-pQ-rUh">

@@ -1,5 +1,5 @@
 //
-//  MovieController.swift
+//  MovieListRowController.swift
 //  Movies
 //
 //  Created by Adrian on 27/07/15.
@@ -8,7 +8,7 @@
 
 import WatchKit
 
-class MovieController: NSObject {
+class MovieListRowController: NSObject {
    
     @IBOutlet weak var movieTitleLabel: WKInterfaceLabel!
     

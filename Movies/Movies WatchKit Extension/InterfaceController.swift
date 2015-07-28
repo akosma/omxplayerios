@@ -39,7 +39,7 @@ class InterfaceController: WKInterfaceController {
                 moviesTable.setNumberOfRows(movies.count, withRowType: "MovieRow")
                 
                 for (index, movieName) in enumerate(movies) {
-                    let row = moviesTable.rowControllerAtIndex(index) as! MovieController
+                    let row = moviesTable.rowControllerAtIndex(index) as! MovieListRowController
                     row.movieTitleLabel.setText(movieName)
                 }
         }
@@ -48,7 +48,7 @@ class InterfaceController: WKInterfaceController {
     func currentMovie(notification: NSNotification) {
         if let userInfo = notification.userInfo,
             let movieName = userInfo["data"] as? String {
-                pushControllerWithName("MovieController", context: movieName)
+                pushControllerWithName("PlayMovieController", context: movieName)
         }
     }
     
