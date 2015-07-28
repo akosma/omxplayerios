@@ -20,7 +20,7 @@
                                     </group>
                                     <connections>
                                         <outlet property="movieTitleLabel" destination="H0x-Mo-PQY" id="XMF-iT-Lsj"/>
-                                        <segue destination="Mls-18-yOG" kind="modal" identifier="showMovie" id="YF7-Ae-SyZ"/>
+                                        <segue destination="Mls-18-yOG" kind="push" identifier="showMovie" id="YF7-Ae-SyZ"/>
                                     </connections>
                                 </tableRow>
                             </items>
@@ -41,7 +41,7 @@
                         <label width="133.5" height="35.5" alignment="left" text="Label" id="EGj-dQ-edF"/>
                         <button width="1" alignment="left" title="Stop Movie" id="mgT-pQ-rUh">
                             <connections>
-                                <action selector="stopMovie" destination="Mls-18-yOG" id="ag6-8f-1hD"/>
+                                <segue destination="Enh-Lp-kW7" kind="push" id="8Mm-52-vPI"/>
                             </connections>
                         </button>
                         <button width="1" alignment="left" title="Pause" id="J0C-Zj-31I">
@@ -55,7 +55,23 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="746" y="337"/>
+            <point key="canvasLocation" x="764" y="337"/>
+        </scene>
+        <!--Stop Movie Interface Controller-->
+        <scene sceneID="pLW-kA-w5U">
+            <objects>
+                <controller id="Enh-Lp-kW7" customClass="StopMovieInterfaceController" customModule="Movies_WatchKit_Extension">
+                    <items>
+                        <label width="136" height="64.5" alignment="left" text="Stop playback?" textAlignment="center" id="Rth-ep-4tX"/>
+                        <button width="1" alignment="left" title="OK" id="KNU-mu-ZY3">
+                            <connections>
+                                <action selector="stop" destination="Enh-Lp-kW7" id="Tap-DY-g9v"/>
+                            </connections>
+                        </button>
+                    </items>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="1010" y="337"/>
         </scene>
     </scenes>
 </document>

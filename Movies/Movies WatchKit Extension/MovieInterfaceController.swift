@@ -14,11 +14,6 @@ class MovieInterfaceController: WKInterfaceController {
 
     @IBOutlet weak var movieTitleLabel: WKInterfaceLabel!
     
-    @IBAction func stopMovie() {
-        APIConnector.sharedInstance.stopMovie()
-        dismissController()
-    }
-    
     @IBAction func pauseMovie() {
         APIConnector.sharedInstance.sendCommand(.Pause)
     }
@@ -33,7 +28,7 @@ class MovieInterfaceController: WKInterfaceController {
     }
     
     func movieStopped(notification: NSNotification) {
-        dismissController()
+        popToRootController()
     }
     
     override func willActivate() {
@@ -46,7 +41,6 @@ class MovieInterfaceController: WKInterfaceController {
     }
     
     override func didDeactivate() {
-        APIConnector.sharedInstance.stopMovie()
         NSNotificationCenter.defaultCenter().removeObserver(self)
         super.didDeactivate()
     }

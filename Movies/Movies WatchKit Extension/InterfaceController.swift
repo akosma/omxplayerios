@@ -28,12 +28,7 @@ class InterfaceController: WKInterfaceController {
             selector: "currentMovie:",
             name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
             object: nil)
-        
-        center.addObserver(self,
-            selector: "currentMovie:",
-            name: APIConnectorNotifications.CurrentMovieReceived.rawValue,
-            object: nil)
-        
+
         APIConnector.sharedInstance.connect()
     }
 
@@ -53,7 +48,7 @@ class InterfaceController: WKInterfaceController {
     func currentMovie(notification: NSNotification) {
         if let userInfo = notification.userInfo,
             let movieName = userInfo["data"] as? String {
-                presentControllerWithName("MovieController", context: movieName)
+                pushControllerWithName("MovieController", context: movieName)
         }
     }
     
@@ -67,5 +62,6 @@ class InterfaceController: WKInterfaceController {
     override func willActivate() {
         super.willActivate()
         APIConnector.sharedInstance.getMovieList()
+        APIConnector.sharedInstance.getCurrentMovie()
     }
 }
