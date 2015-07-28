@@ -33,20 +33,25 @@
             </objects>
             <point key="canvasLocation" x="510" y="337"/>
         </scene>
-        <!--PlayMovieController-->
+        <!--Now Playing-->
         <scene sceneID="yCs-IO-7XR">
             <objects>
-                <controller identifier="PlayMovieController" id="Mls-18-yOG" customClass="MovieInterfaceController" customModule="Movies_WatchKit_Extension">
+                <controller identifier="PlayMovieController" title="Now Playing" id="Mls-18-yOG" customClass="MovieInterfaceController" customModule="Movies_WatchKit_Extension">
                     <items>
-                        <label width="133.5" height="35.5" alignment="left" text="Label" id="EGj-dQ-edF"/>
-                        <button width="1" alignment="left" title="Stop Movie" id="mgT-pQ-rUh">
+                        <label width="133.5" height="23.5" alignment="left" text="Label" id="EGj-dQ-edF"/>
+                        <button width="1" alignment="left" title="Stop" id="u66-Wl-kpG">
                             <connections>
-                                <segue destination="Enh-Lp-kW7" kind="push" id="8Mm-52-vPI"/>
+                                <segue destination="Enh-Lp-kW7" kind="push" id="CaJ-vL-tIb"/>
                             </connections>
                         </button>
-                        <button width="1" alignment="left" title="Pause" id="J0C-Zj-31I">
+                        <button width="1" alignment="left" title="Pause" id="kxf-NT-N9B">
                             <connections>
-                                <action selector="pauseMovie" destination="Mls-18-yOG" id="Sdd-DA-szc"/>
+                                <action selector="pauseMovie" destination="Mls-18-yOG" id="bnM-gq-4o6"/>
+                            </connections>
+                        </button>
+                        <button width="1" alignment="left" title="Subtitles" id="wCt-SC-4Cf">
+                            <connections>
+                                <action selector="toggleSubtitles" destination="Mls-18-yOG" id="1eu-TY-ScB"/>
                             </connections>
                         </button>
                     </items>
@@ -55,12 +60,12 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="764" y="337"/>
+            <point key="canvasLocation" x="764" y="335"/>
         </scene>
-        <!--Stop Movie Interface Controller-->
+        <!--Cancel-->
         <scene sceneID="pLW-kA-w5U">
             <objects>
-                <controller id="Enh-Lp-kW7" customClass="StopMovieInterfaceController" customModule="Movies_WatchKit_Extension">
+                <controller title="Cancel" id="Enh-Lp-kW7" customClass="StopMovieInterfaceController" customModule="Movies_WatchKit_Extension">
                     <items>
                         <label width="136" height="64.5" alignment="left" text="Stop playback?" textAlignment="center" id="Rth-ep-4tX"/>
                         <button width="1" alignment="left" title="OK" id="KNU-mu-ZY3">

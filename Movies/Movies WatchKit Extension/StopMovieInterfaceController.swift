@@ -16,9 +16,4 @@ class StopMovieInterfaceController: WKInterfaceController {
         APIConnector.sharedInstance.stopMovie()
         popToRootController()
     }
-    
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        setTitle("Cancel")
-    }
 }

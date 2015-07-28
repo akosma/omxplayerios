@@ -18,6 +18,10 @@ class MovieInterfaceController: WKInterfaceController {
         APIConnector.sharedInstance.sendCommand(.Pause)
     }
     
+    @IBAction func toggleSubtitles() {
+        APIConnector.sharedInstance.sendCommand(.Subtitles)
+    }
+    
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
