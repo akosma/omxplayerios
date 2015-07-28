@@ -43,8 +43,10 @@ To build this application, follow these instructions:
 
 Special thanks for:
 
-- Icons: [Oxygen Team][oxygen]
-- socket.io library: [Socket.IO-Client-Swift][client]
+- Application icon: [Wikipedia][icon] and later processed with
+  [MakeAppicon][makeappicon].
+- Playback buttons: [Oxygen Team][oxygen].
+- socket.io library: [Socket.IO-Client-Swift][client].
 
 ## License
 
@@ -53,6 +55,8 @@ Check the LICENSE file for details.
 
 [client]:https://github.com/socketio/socket.io-client-swift
 [cocoapods]:https://cocoapods.org
+[icon]:https://commons.wikimedia.org/wiki/File:Twemoji_1f3a5.svg
+[makeappicon]:http://makeappicon.com/
 [omxplayer]:http://www.raspberry-projects.com/pi/software_utilities/omxplayer
 [omxplayernode]:https://github.com/akosma/omxplayernode
 [omxplayerphp]:https://github.com/akosma/omxplayerphp
