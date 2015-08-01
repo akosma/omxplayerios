@@ -48,6 +48,19 @@ class APIConnector: NSObject {
     }
     var socket : SocketIOClient?
     
+    // This method is required by the action extension, which has a very
+    // lifetime and does not require the whole infrastructure to be loaded.
+    func connectAndDownload(url: String) {
+        socket = SocketIOClient(socketURL: baseURLString)
+        
+        socket?.on("welcome") { data, ack in
+            println("socket connected, downloading movie")
+            self.downloadMovie(url)
+        }
+        
+        socket?.connect()
+    }
+    
     func connect() {
         socket = SocketIOClient(socketURL: baseURLString)
         
@@ -142,5 +155,10 @@ class APIConnector: NSObject {
     func stopMovie() {
         println("emitting 'stop'")
         socket?.emit("stop")
+    }
+    
+    func downloadMovie(url: String) {
+        println("emitting 'download \(url)'")
+        socket?.emit("download", url)
     }
 }
