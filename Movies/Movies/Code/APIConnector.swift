@@ -17,6 +17,7 @@ enum APIConnectorNotifications : String {
     case MoviePlaying = "MoviePlaying"
     case MovieStopped = "MovieStopped"
     case CommandSent = "CommandSent"
+    case DownloadFinished = "DownloadFinished"
 }
 
 enum APIConnectorMovieCommands : String {
@@ -122,6 +123,18 @@ class APIConnector: NSObject {
             var notif = APIConnectorNotifications.MovieStopped.rawValue
             NSNotificationCenter.defaultCenter().postNotificationName(notif,
                 object: self)
+        }
+        
+        socket?.on("download_finished") { data, ack in
+            println("received 'download_finished'")
+            if let responseArray = data,
+                let responseDictionary = responseArray[0] as? [String : AnyObject],
+                let response = responseDictionary["response"] as? [String : AnyObject] {
+                    var notif = APIConnectorNotifications.DownloadFinished.rawValue
+                    NSNotificationCenter.defaultCenter().postNotificationName(notif,
+                        object: self,
+                        userInfo: response)
+            }
         }
         
         socket?.connect()

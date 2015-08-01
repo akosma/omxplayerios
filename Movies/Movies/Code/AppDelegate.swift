@@ -7,57 +7,91 @@
 //
 
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     var window: UIWindow?
-
+    var player : AVAudioPlayer!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        // Configure audio session
+        let sess = AVAudioSession.sharedInstance()
+        sess.setCategory(AVAudioSessionCategoryPlayback, withOptions: nil, error: nil)
+        sess.setActive(true, withOptions: nil, error: nil)
+        
+        // Load a silent file to start playback on the device
+        // This is required to get remote control events and to keep the app active in the background
+        let path = NSBundle.mainBundle().pathForResource("silence", ofType: "m4a")!
+        let fileURL = NSURL(fileURLWithPath: path)
+        player = AVAudioPlayer(contentsOfURL: fileURL, error: nil)
+        // Play forever, at a very low volume
+        player.numberOfLoops = -1
+        player.volume = 0
+        player.play()
+
+        // iPad related stuff
         let splitViewController = self.window!.rootViewController as! UISplitViewController
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
         navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
-        splitViewController.delegate = self        
+        splitViewController.delegate = self
+        
+        let notif = APIConnectorNotifications.DownloadFinished.rawValue
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "downloadFinished:",
+            name: notif,
+            object: nil)
+        
+        let markAsReadAction = UIMutableUserNotificationAction()
+        markAsReadAction.identifier = "dismiss"
+        markAsReadAction.title = "Dismiss"
+        markAsReadAction.activationMode = .Background
+        markAsReadAction.destructive = false
+        markAsReadAction.authenticationRequired = false
+
+        var actions = UIMutableUserNotificationCategory()
+        actions.identifier = "downloadFinished"
+        actions.setActions([ markAsReadAction ], forContext: .Minimal)
+        actions.setActions([ markAsReadAction ], forContext: .Default)
+
+        let types : UIUserNotificationType = .Alert | .Badge | .Sound
+        let categories = NSSet(objects: actions) as? Set<NSObject>
+        let settings = UIUserNotificationSettings(forTypes: types, categories: categories)
+        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        
         return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    // MARK: - Notification handlers
+    
+    func downloadFinished(notification: NSNotification) {
+        let data = notification.userInfo!
+        let url = data["url"] as? String
+        let code = data["code"] as? Int
+        let not = UILocalNotification()
+        not.soundName = UILocalNotificationDefaultSoundName
+        not.alertTitle = "Movie Downloaded"
+        not.category = "downloadFinished"
+        not.fireDate = NSDate()
+        not.alertBody = "Download finished: \(url!) with code \(code!)"
+        UIApplication.sharedApplication().presentLocalNotificationNow(not)
     }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
+    
     // MARK: - Split view
 
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController:UIViewController!, ontoPrimaryViewController primaryViewController:UIViewController!) -> Bool {
+    func splitViewController(splitViewController: UISplitViewController,
+        collapseSecondaryViewController secondaryViewController:UIViewController!,
+        ontoPrimaryViewController primaryViewController:UIViewController!) -> Bool {
         if let secondaryAsNavController = secondaryViewController as? UINavigationController {
             if let topAsDetailController = secondaryAsNavController.topViewController as? DetailViewController {
                 if topAsDetailController.detailItem == nil {
-                    // Return true to indicate that we have handled the collapse by doing nothing; the secondary controller will be discarded.
+                    // Return true to indicate that we have handled the collapse by doing nothing; 
+                    // the secondary controller will be discarded.
                     return true
                 }
             }
         }
         return false
     }
-
 }
-
