@@ -45,7 +45,6 @@ class MasterViewController: UITableViewController {
     var detailViewController: DetailViewController? = nil
     var selectedMovieTitle : String? = nil
     var movies = [Entry]()
-    var sections = [String]()
     var diskSpaceAvailable = ""
 
     override func awakeFromNib() {
