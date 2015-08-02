@@ -8,12 +8,44 @@
 
 import UIKit
 
+// Adapted from
+// http://www.raywenderlich.com/82599/swift-functional-programming-tutorial
+typealias Entry = (Character, [String])
+
+func buildIndex(words: [String]) -> [Entry] {
+    func distinct<T: Equatable>(source: [T]) -> [T] {
+        var unique = [T]()
+        for item in source {
+            if !contains(unique, item) {
+                unique.append(item)
+            }
+        }
+        return unique
+    }
+    
+    func firstLetter(str: String) -> Character {
+        return Character(str.substringToIndex(advance(str.startIndex, 1)).uppercaseString)
+    }
+
+    let letters = words.map { word -> Character in
+        firstLetter(word)
+    }
+    let distinctLetters = distinct(letters)
+    
+    return distinctLetters.map { letter -> Entry in
+        return (letter, words.filter { word -> Bool in
+            firstLetter(word) == letter
+        })
+    }
+}
+
 
 class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
     var selectedMovieTitle : String? = nil
-    var movies = [String]()
+    var movies = [Entry]()
+    var sections = [String]()
     var diskSpaceAvailable = ""
 
     override func awakeFromNib() {
@@ -87,7 +119,7 @@ class MasterViewController: UITableViewController {
     func movieListLoaded(notification: NSNotification) {
         if let userInfo = notification.userInfo,
             let remoteMovies = userInfo["data"] as? [String] {
-                movies = remoteMovies
+                movies = buildIndex(remoteMovies)
                 tableView.reloadData()
         }
     }
@@ -122,7 +154,8 @@ class MasterViewController: UITableViewController {
                 movie = notificationMovie
             }
             else if let indexPath = self.tableView.indexPathForSelectedRow() {
-                movie = movies[indexPath.row]
+                let entry = movies[indexPath.section]
+                movie = entry.1[indexPath.row]
             }
             let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
             controller.currentMovieName = movie
@@ -133,22 +166,39 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return movies.count
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
+        let entry = movies[section]
+        return entry.1.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
 
-        let object = movies[indexPath.row]
-        cell.textLabel!.text = object
+        let entry = movies[indexPath.section]
+        let movie = entry.1[indexPath.row]
+        cell.textLabel!.text = movie
         return cell
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Available disk space: \(diskSpaceAvailable)"
+        let entry = movies[section]
+        let title = entry.0
+        return String(title)
+    }
+    
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == movies.count - 1 {
+            return "Disk space available: \(diskSpaceAvailable)"
+        }
+        return nil
+    }
+    
+    override func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+        return movies.map { entry -> String in
+            String(entry.0)
+        }
     }
 }
